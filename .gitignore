@@ -1,1 +1,4 @@
-/.stock_monitor.stocks.config
+__pycache__
+*.pyc
+*.db
+stock_monitor.stocks.config
