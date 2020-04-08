@@ -1,8 +1,4 @@
-stocks.__pycache__
+__pycache__
 *.pyc
-db.sqlite3
-stock_monitor.sqlite3
-stock_monitor.config
-stock_monitor.stock_monitor.config
-stock_monitor.stock_monitor.db
-stock_monitor.stocks.__pycache__
+*.db
+stock_monitor.stocks.config
