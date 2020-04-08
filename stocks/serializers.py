@@ -28,6 +28,7 @@ class LoginSerializer(serializers.Serializer):
             msg = "Please provide your Username and Password."
             raise exceptions.ValidationError(msg)
         return data
+    
 
 class ItemSerializer(serializers.ModelSerializer):
     class Meta:

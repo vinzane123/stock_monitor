@@ -32,15 +32,14 @@ class LoginView(APIView):
         return Response({"token":token.key},status=200)
 
 
-
 '''
     Logout API which removes the
     sessionId from the cookies.
 '''   
 
 class LogoutView(APIView):
-    authentication_classes = (TokenAuthentication, )
-
+    authentication_classes = (TokenAuthentication,)
+    
     def post(self,request):
         django_logout(request)
         return Response(status=204)
@@ -109,14 +108,28 @@ class WatchList(mixins.ListModelMixin,
             raise exceptions.ValidationError(msg)
         
     def post(self,request):
-        obj_items = ItemList.objects.filter(user=request.user)
-        l =[]
-        if len(obj_items)>0:
-            for x in obj_items:
-                l.append(x.item_name)
-            if request.data['item_name'] in l:
-                msg = "Item already added to your WatchList."
-                raise exceptions.ValidationError(msg)
+        try:
+            obj_items = ItemList.objects.filter(user=request.user)
+            l =[]
+            if len(obj_items)>0:
+                for x in obj_items:
+                    l.append(x.item_name)
+                if request.data['item_name'] in l:
+                    msg = "Item already added to your WatchList."
+                    raise exceptions.ValidationError(msg)
+                else:
+                    self.create(request)
+                    symbol =request.data['item_name']
+                    payload = {'function':self.function,'symbol':symbol,'apikey':self.apikey,'interval':self.interval}
+                    r = requests.get(self.url,params=payload)
+                    if len(r.json()) == 1:
+                        ins = PostValues()
+                        ins.delete_obj(symbol=symbol,user=request.user)
+                        return Response(r.json())
+                    else:
+                        p = PostValues()
+                        val =p.save(symbol=symbol,user=request.user,r=r)
+                        return Response({'item_name':request.data['item_name'],'value':val,'response':'Added Successfully','status':201})
             else:
                 self.create(request)
                 symbol =request.data['item_name']
@@ -126,24 +139,13 @@ class WatchList(mixins.ListModelMixin,
                     ins = PostValues()
                     ins.delete_obj(symbol=symbol,user=request.user)
                     return Response(r.json())
+
                 else:
                     p = PostValues()
-                    val =p.save(symbol=symbol,user=request.user,r=r)
-                    return Response({'item_name':request.data['item_name'],'value':val,'response':'Added Successfully','status':201})
-        else:
-            self.create(request)
-            symbol =request.data['item_name']
-            payload = {'function':self.function,'symbol':symbol,'apikey':self.apikey,'interval':self.interval}
-            r = requests.get(self.url,params=payload)
-            if len(r.json()) == 1:
-                ins = PostValues()
-                ins.delete_obj(symbol=symbol,user=request.user)
-                return Response(r.json())
-
-            else:
-                p = PostValues()
-                val=p.save(symbol=symbol,user=request.user,r=r)
-                return Response({'item_name':symbol,'value':val,'response':'Added Successfully','status':201})
+                    val=p.save(symbol=symbol,user=request.user,r=r)
+                    return Response({'item_name':symbol,'value':val,'response':'Added Successfully','status':201})
+        except ItemList.DoesNotExist as e:
+            return Response( {"error": "Given object with user not found."}, status=404)
     
 '''
     An Auxilliary Class to create/delete
