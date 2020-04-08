@@ -39,7 +39,7 @@ class LoginView(APIView):
 
 class LogoutView(APIView):
     authentication_classes = (TokenAuthentication,)
-    
+
     def post(self,request):
         django_logout(request)
         return Response(status=204)
@@ -84,7 +84,7 @@ class WatchList(mixins.ListModelMixin,
     
     queryset = ItemList.objects.all()
     serializer_class = ItemSerializer
-    authentication_classes = (SessionAuthentication,TokenAuthentication)
+    authentication_classes = (TokenAuthentication,SessionAuthentication)
     permission_classes = [IsAuthenticated]
     lookup_field = 'id'
     function = "TIME_SERIES_INTRADAY"
@@ -99,13 +99,16 @@ class WatchList(mixins.ListModelMixin,
             return self.list(request)
 
     def delete(self,request,id=None):
-        obj = ItemList.objects.get(id=id)
-        print(obj.user,request.user)
-        if obj.user == request.user:
-            return self.destroy(request,id)
-        else:
-            msg = "Not enough Credentials"
-            raise exceptions.ValidationError(msg)
+        try:
+            obj = ItemList.objects.get(id=id)
+            if obj.user == request.user:
+                return self.destroy(request,id)
+            else:
+                msg = "Not enough Credentials"
+                raise exceptions.ValidationError(msg)
+        except ItemList.DoesNotExist as e:
+            return Response( {"error": "Given object with user not found."}, status=404)
+
         
     def post(self,request):
         try:
@@ -176,7 +179,6 @@ class WatchListbyUser(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        print(self.request.user)
         user = self.request._user.id
         if user:
             return ItemList.objects.filter(user=user)   

@@ -6,7 +6,7 @@ class ItemList(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
     item_name = models.TextField(null=False,blank=False)
-    value = models.FloatField(null=True,blank=True)
+    value = models.FloatField(null=True,blank=True,default=0)
 
     class Meta:
         ordering = ['created_on']
