@@ -19,3 +19,5 @@ http://localhost:8000
 # Future Enhancements
 Job scheduler to update stock values every 5 mins.
 
+#  To run on Local Machine
+Create config .py in stock_monitor folder with values api_key,url and secret_key

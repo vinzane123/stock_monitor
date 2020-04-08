@@ -99,6 +99,14 @@ USE_L10N = True
 
 USE_TZ = True
 
+a = "0777"
+dir_mode=int(a)
+file_mode=int(a)
+uid=0
+gid=0
+mfsymlinks = "strict"
+nobrl = "strict"
+cache = "strict"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
