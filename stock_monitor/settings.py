@@ -12,14 +12,14 @@ DEFAULT_RENDERER_CLASSES = (
     'rest_framework.renderers.JSONRenderer',
 )
 
-if DEBUG:
-    DEFAULT_RENDERER_CLASSES = DEFAULT_RENDERER_CLASSES + (
-        'rest_framework.renderers.BrowsableAPIRenderer',
-    )
+# if DEBUG:
+#     DEFAULT_RENDERER_CLASSES = DEFAULT_RENDERER_CLASSES + (
+#         'rest_framework.renderers.BrowsableAPIRenderer',
+#     )
 
-REST_FRAMEWORK = {
-    'DEFAULT_RENDERER_CLASSES': DEFAULT_RENDERER_CLASSES
-}
+# REST_FRAMEWORK = {
+#     'DEFAULT_RENDERER_CLASSES': DEFAULT_RENDERER_CLASSES
+# }
 
 
 INSTALLED_APPS = [
@@ -47,6 +47,16 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'stock_monitor.urls'
 
+# CSRF_COOKIE_SECURE = True
+# SESSION_COOKIE_SECURE = True
+# SECURE_SSL_REDIRECT = True
+# SECURE_REFERRER_POLICY = 'same-origin'
+# SECURE_HSTS_SECONDS = 3600
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# SECURE_HSTS_PRELOAD = True
+
+
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -64,6 +74,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'stock_monitor.wsgi.application'
+
 
 DATABASES = {
     'default': {
