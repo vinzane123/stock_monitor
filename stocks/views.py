@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,HttpResponse
 from rest_framework.views import APIView
 from .serializers import LoginSerializer,ItemSerializer
 from django.contrib.auth import login as django_login, logout as django_logout
@@ -21,6 +21,8 @@ import requests
     validating username and pass-
     -word of the user.
 '''
+def index(request):
+    return HttpResponse('Hello, World!')
 
 class LoginView(APIView):
     def post(self,request):

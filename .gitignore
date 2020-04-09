@@ -4,3 +4,8 @@
 *.sqlite3
 stock_monitor.stock_monitor.config
 stock_monitor.stocks.config
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
