@@ -1,7 +1,5 @@
 import os
 import django_heroku
-
-
 from stock_monitor import config 
 
 
@@ -15,14 +13,14 @@ DEFAULT_RENDERER_CLASSES = (
     'rest_framework.renderers.JSONRenderer',
 )
 
-# if DEBUG:
-#     DEFAULT_RENDERER_CLASSES = DEFAULT_RENDERER_CLASSES + (
-#         'rest_framework.renderers.BrowsableAPIRenderer',
-#     )
+if DEBUG:
+    DEFAULT_RENDERER_CLASSES = DEFAULT_RENDERER_CLASSES + (
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    )
 
-# REST_FRAMEWORK = {
-#     'DEFAULT_RENDERER_CLASSES': DEFAULT_RENDERER_CLASSES
-# }
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': DEFAULT_RENDERER_CLASSES
+}
 
 
 INSTALLED_APPS = [
@@ -82,23 +80,10 @@ WSGI_APPLICATION = 'stock_monitor.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.path.join(BASE_DIR, 'db.mysql'),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#         'OPTIONS': {
-#     # ...
-#     'timeout': 50,
-#     # ...
-# }
-#     }
-# }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
