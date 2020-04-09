@@ -22,7 +22,7 @@ import requests
     -word of the user.
 '''
 def index(request):
-    return HttpResponse('Hello, World!')
+    return HttpResponse('Hella, Investors!')
 
 class LoginView(APIView):
     def post(self,request):
@@ -114,6 +114,7 @@ class WatchList(mixins.ListModelMixin,
         
     def post(self,request):
         try:
+            print("user:",request.data)
             obj_items = ItemList.objects.filter(user=request.user)
             l =[]
             if len(obj_items)>0:
