@@ -1,0 +1,54 @@
+WEB ADMIN LOGIN API: [GET]
+
+https://stocksmonitor.herokuapp.com/admin/
+
+
+
+LOGIN API: [POST]
+
+https://stocksmonitor.herokuapp.com/api/v1/auth/login
+
+
+
+LOGOUT API: [POST]
+
+https://stocksmonitor.herokuapp.com/api/v1/auth/LOGOUT
+
+
+
+STOCK SEARCH API:
+
+https://stocksmonitor.herokuapp.com/api/v1/watch_list
+
+
+
+WATCH LIST OF A USER: [GET]
+
+https://stocksmonitor.herokuapp.com/api/v1/watch_list_user
+
+
+
+ADD ITEM TO WATCH LIST: [POST]
+
+https://stocksmonitor.herokuapp.com/api/v1/watch_list 
+
+
+
+DELETE ITEM TO WATCH LIST: [DELETE]
+
+https://stocksmonitor.herokuapp.com/api/v1/watch_list_user
+
+
+
+LIST OF ALL ITEMS INDEPENDENT TO USER: [GET]
+
+https://stocksmonitor.herokuapp.com/api/v1/watch_list
+
+
+
+
+*note: 
+>Users can be created from web admin dashboard. [Login using Web Admin Login API]
+>All APIs here require a sessionId and a csrftoken.
+>debug is set true for testing purpose. 
+>url returns drf enable html renderer for testing purpose. [You can post your data in the html.]
