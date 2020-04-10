@@ -13,6 +13,7 @@ from rest_framework import filters
 from stock_monitor.config import *
 from .models import ItemList
 import requests
+import uuid
 
 
 
