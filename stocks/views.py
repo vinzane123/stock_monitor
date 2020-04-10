@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from .serializers import LoginSerializer,ItemSerializer
 from django.contrib.auth import login as django_login, logout as django_logout
 from rest_framework.authtoken.models import Token
-from rest_framework.authentication import TokenAuthentication,SessionAuthentication,BaseAuthentication
+from rest_framework.authentication import TokenAuthentication,SessionAuthentication,BaseAuthentication,BasicAuthentication
 from rest_framework.permissions import IsAuthenticatedOrReadOnly,IsAuthenticated,IsAdminUser
 from rest_framework.response import Response
 from rest_framework import generics
@@ -31,7 +31,9 @@ class LoginView(APIView):
         user = serializer.validated_data["user"]
         django_login(request,user)
         token, created = Token.objects.get_or_create(user=user)
-        return Response({"token":token.key},status=200)
+        return Response({"token":token.key,"cookie":request.META['HTTP_COOKIE']},status=200)
+
+    
 
 
 '''
@@ -61,6 +63,7 @@ class StockSearch(APIView):
 
     def get(self,request):
         re = request.query_params
+        print(request.META['HTTP_COOKIE'])
         if re:
             keywords = re['keywords']
             payload = {'function':self.function,'keywords':keywords,'apikey':api_key}
@@ -86,7 +89,7 @@ class WatchList(mixins.ListModelMixin,
     
     queryset = ItemList.objects.all()
     serializer_class = ItemSerializer
-    authentication_classes = (TokenAuthentication,SessionAuthentication)
+    authentication_classes = (TokenAuthentication,SessionAuthentication) 
     permission_classes = [IsAuthenticated]
     lookup_field = 'id'
     function = "TIME_SERIES_INTRADAY"
@@ -102,8 +105,11 @@ class WatchList(mixins.ListModelMixin,
 
     def delete(self,request,id=None):
         try:
+            print(dir(request))
+            print(request.data)
             obj = ItemList.objects.get(id=id)
             if obj.user == request.user:
+                print(Response)
                 return self.destroy(request,id)
             else:
                 msg = "Not enough Credentials"
@@ -114,7 +120,6 @@ class WatchList(mixins.ListModelMixin,
         
     def post(self,request):
         try:
-            print("user:",request.data)
             obj_items = ItemList.objects.filter(user=request.user)
             l =[]
             if len(obj_items)>0:
