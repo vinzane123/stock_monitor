@@ -28,7 +28,8 @@ class LoginView(APIView):
         user = serializer.validated_data["user"]
         django_login(request,user)
         token, created = Token.objects.get_or_create(user=user)
-        return Response({"token":token.key},status=200)
+        req_obj = request.META.get("HTTP_COOKIE",request.META.get('CSRF_COOKIE',"")))
+        return Response({"token":token.key,"csrf":req_obj},status=200)
 
     
 
