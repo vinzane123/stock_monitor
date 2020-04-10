@@ -57,7 +57,9 @@ ROOT_URLCONF = 'stock_monitor.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'stock_monitor/templates'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

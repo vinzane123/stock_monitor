@@ -12,12 +12,16 @@ from rest_framework import exceptions
 from rest_framework import filters
 from stock_monitor.config import *
 from .models import ItemList
+from django.template import loader
 import requests
 
 
 def index(request):
-    return HttpResponse('Hella, Investors!')
+    return render(request,'home.html')
+    # return HttpResponse('Hella, Investors!')
 
+def loginpage(request):
+    return render(request,'login.html')
 
 '''
     Login API which returns token 
@@ -61,6 +65,7 @@ class StockSearch(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self,request):
+        print(dir(request.META['HTTP_COOKIE']))
         re = request.query_params
         if re:
             keywords = re['keywords']

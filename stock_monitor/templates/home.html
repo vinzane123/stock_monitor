@@ -1,0 +1,374 @@
+<!Doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+    <meta http-equiv="X-UA-compatible" Content="IE-edge">
+    <title>Stocks</title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <link href="css/loader.css" rel="stylesheet" type="text/css">
+
+    <!-- <link rel="icon" type="image/ico" href="images/elysium favicon 48px.ico" /> -->
+
+
+</head>
+
+<body onload="getWatchListForUser()">
+
+    <header class="main-header">
+
+        <div class="requestdemomain">
+            <ul class="nav justify-content-end">
+                <li class="nav-item">
+                    <a class="nav-link support" id='logoutId' onClick="logOutAction()">Sign Out</a>
+                </li>
+            </ul>
+        </div>
+
+    </header>
+
+    <div style="height:1px;background:#f59328"></div>
+
+    <!-- watchlist start -->
+    <Section style="width:100%" id='watchList'>
+        <h4>Watchlist</h4>
+        <h6>you do not have any watchlist yet.click on add item</h6>
+        <table style="width:50%" id='watchListTable'>
+
+
+        </table>
+    </Section>
+    <!-- watchlist end -->
+
+    <!-- add new stock -->
+    <div style="margin-top: 25px;"><button class="btn btn-primary" id='addItemId'>Add
+            item<span><img style="padding:5px" src='icons/add.png' widht=30 height=30 /></span></a>
+        </button></div>
+
+    <div id="overlay" style='align-items:center;display:flex;display: none;'>
+        <div class="modal-content" id='modalId' style="width:60%;margin:0 auto;">
+            <div class="modal-header">
+                <button type="button" class="close">&times;</button>
+            </div>
+            <div>
+                <!-- Search form -->
+                <div class="form-inline d-flex justify-content-center md-form form-sm active-purple-2 mt-2">
+                    <input class="form-control form-control-sm mr-3 w-75" type="text" placeholder="Search"
+                        aria-label="Search">
+                    <button class='btn btn-primary' style="height:25px;padding:0px 5px 5px 5px;"
+                        onClick="searchItemAction()">search</button>
+                </div>
+
+                <!-- search Results -->
+                <div style="height:300px;overflow-y:scroll;margin-top:20px;margin-left: 100px;">
+                    <h6>Search Results</h6>
+                    <table style="width:50%" id='searchResultsTable'>
+
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- loader start -->
+    <div class="loader-overlaycont">
+        <!-- loader end -->
+
+
+        <!--jquerymin.js-->
+        <script src="js/jquerymin.js"></script>
+        <!--popper.js-->
+        <script src="js/popper.min.js"></script>
+        <!--javascript.js-->
+        <script src="js/bootstrap.min.js"></script>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script src="js/loader.js"></script>
+
+        <script>
+            var csrfToken;
+            //get watchlist for a user
+            function getWatchListForUser() {
+
+                let localToken = sessionStorage.getItem('token');
+                let csrfToken = sessionStorage.getItem('csrftoken');
+
+
+                console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>.local token', localToken);
+                console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>.csrf token', csrfToken);
+
+                if (localToken == null && csrfToken == null) {
+                    document.location.href = 'login.html'
+                }
+                else {
+                    $('.loader-overlaycont').html(loaderdiv)
+                    $.ajax(`https://stocksmonitor.herokuapp.com/api/v1/watch_list_user`, {
+                        type: "GET",
+                        headers: {
+                            // "Accept": "/",
+                            // "Cache-Control": "no-cache",
+                            // "Cookie": `csrftoken=${csrfToken}`,
+                            "Authorization": `Bearer ${localToken}`
+                        },
+                        xhrFields: { withCredentials: true },
+                        statusCode: {
+                            200: (response) => {
+                                console.log(response)
+                                $('.loader-overlaycont').html('')
+                            },
+                            403: (response) => {
+                                $('.loader-overlaycont').html('')
+                                swal('Something went wrong. Please try again');
+                            }
+                        },
+                        error: () => {
+                            $('.loader-overlaycont').html('')
+                            swal('Something went wrong');
+                        }
+                    });
+                }
+
+
+            }
+
+
+
+            function addItemAction() {
+
+                $('.loader-overlaycont').html(loaderdiv)
+                $.ajax(`${proxyurl}http://stocksmonitor.herokuapp.com/api/v1/watch_list`, {
+                    type: "POST",
+                    async: true,
+                    xhrFields: { withCredentials: true },
+                    headers: {
+                        // "Accept": "/",
+                        // "Cache-Control": "no-cache",
+                        // "Cookie": `csrftoken=${csrfToken}`,
+                        "Authorization": `Bearer ${localToken}`
+                    },
+                    data: {
+                        'item_name': '',
+                        'user': '1'
+                    },
+                    statusCode: {
+                        200: (response) => {
+                            console.log(response)
+                            getWatchListForUser()
+                            $('.loader-overlaycont').html('')
+                        },
+                        403: (response) => {
+                            $('.loader-overlaycont').html('')
+                            swal('Something went wrong. Please try again');
+                        }
+                    },
+                    error: () => {
+                        $('.loader-overlaycont').html('')
+                        swal('Something went wrong');
+                    }
+                });
+
+            }
+
+            function deleteItemAction() {
+                swal("Are you sure to delete stock", {
+                    buttons: {
+                        no: {
+                            text: "NO",
+                            value: "no"
+                        },
+                        yes: {
+                            text: "YES",
+                            value: "yes"
+                        },
+
+                    },
+                })
+                    .then((value) => {
+                        switch (value) {
+
+                            case "yes":
+                                deleteAction()
+                                break;
+
+                            case "no":
+                                // swal("Gotcha!", "Pikachu was caught!", "success");
+                                break;
+
+                            // default:
+                            //     swal("Sorry! Refresh the page and check again");
+                        }
+                    });
+
+                function deleteAction() {
+                    $('.loader-overlaycont').html(loaderdiv)
+
+                    $.ajax(`${proxyurl}https://stocksmonitor.herokuapp.com/api/v1/watch_list/3`, {
+                        type: "DELETE",
+                        "async": true,
+                        "crossDomain": true,
+                        xhrFields: { withCredentials: true },
+                        headers: {
+                            // "Accept": "/",
+                            // "Cache-Control": "no-cache",
+                            // "Cookie": `csrftoken=${csrfToken}`,
+                            "Authorization": `Bearer ${localToken}`
+                        },
+                        statusCode: {
+                            200: (response) => {
+                                console.log(response)
+                                getWatchListForUser()
+                                $('.loader-overlaycont').html('')
+                            },
+                            403: (response) => {
+                                $('.loader-overlaycont').html('')
+                                swal('Something went wrong. Please try again');
+                            }
+                        },
+                        error: () => {
+                            $('.loader-overlaycont').html('')
+                            swal('Something went wrong. Please try again');
+                        }
+                    });
+                }
+
+            }
+
+
+
+            function searchItemAction() {
+
+                $('.loader-overlaycont').html(loaderdiv)
+
+                $.ajax(`https://stocksmonitor.herokuapp.com/api/v1/stock_search?keywords=goog`, {
+                    type: "GET",
+                    "async": true,
+                    "crossDomain": true,
+                    xhrFields: { withCredentials: true },
+                    headers: {
+                        // "Accept": "/",
+                        // "Cache-Control": "no-cache",
+                        // "Cookie": `csrftoken=${csrfToken}`,
+                        "Authorization": `Bearer ${localToken}`
+                    },
+                    statusCode: {
+                        200: (response) => {
+                            console.log(response)
+                            $('.loader-overlaycont').html('')
+                        },
+                        403: (response) => {
+                            $('.loader-overlaycont').html('')
+                            swal('Something went wrong. Please try again');
+                        }
+                    },
+                    error: () => {
+                        $('.loader-overlaycont').html('')
+                        swal('Something went wrong. Please try again');
+                    }
+                });
+            }
+
+
+            $(document).ready(function () {
+
+
+
+                $(window).on("popstate", function (event, state) {
+                    // Here comes the code to execute when the back button is pressed
+                    var localToken = sessionStorage.getItem('token');
+                    if (localToken != null && localToken != '') {
+                        document.location.href = 'home.html'
+                    }
+
+                })
+
+                $('#addItemId').click(function () {
+                    $('#overlay').show()
+                })
+                $('.close').click(function () {
+                    $('#overlay').hide()
+                })
+                var list = [
+                    // {
+                    //     'a': '1',
+                    //     'b': 'itc',
+                    //     'c': '200'
+                    // },
+                    // {
+                    //     'a': '2',
+                    //     'b': 'tcs',
+                    //     'c': '3434'
+                    // },
+                    // {
+                    //     'a': '3',
+                    //     'b': 'wipo',
+                    //     'c': '4564'
+                    // },
+                    // {
+                    //     'a': '4',
+                    //     'b': 'sdf',
+                    //     'c': '34'
+                    // },
+                    // {
+                    //     'a': '5',
+                    //     'b': 'hjg',
+                    //     'c': '400'
+                    // },
+                ]
+
+                var watchListHtml = `<tr>
+        <th>S.No</th>
+        <th>Name</th>
+        <th>Value</th>
+        <th></th>
+    </tr>`;
+                list.map((stock, index) => {
+
+                    watchListHtml += ` <tr>
+        <td>${index + 1}</td>
+        <td>${stock.b}</td>
+        <td>${stock.c}</td>
+        <td><img style="padding:5px" src='icons/delete.png' widht=30 height=30 onClick='deleteItemAction()'/></td>
+    </tr>`
+                }
+
+
+                );
+
+                $('#watchListTable').html(watchListHtml);
+                $('#searchResultsTable').html(watchListHtml);
+
+            });
+
+
+            // user logout action
+            function logOutAction() {
+                $('.loader-overlaycont').html(loaderdiv)
+                $.ajax(`https://stocksmonitor.herokuapp.com/api/v1/auth/logout`, {
+                    type: "POST",
+                    xhrFields: { withCredentials: true },
+                    statusCode: {
+                        204: (response) => {
+                            console.log(response)
+                            sessionStorage.removeItem('token')
+                            sessionStorage.removeItem('csrftoken')
+                            document.location.href = 'login.html'
+                            $('.loader-overlaycont').html('')
+                        },
+                    },
+                    error: () => {
+                        $('.loader-overlaycont').html('')
+                        swal('Something went wrong');
+                    }
+                });
+
+            }
+        </script>
+
+</body>
+
+</html>
