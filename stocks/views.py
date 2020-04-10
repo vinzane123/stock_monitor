@@ -13,8 +13,6 @@ from rest_framework import filters
 from stock_monitor.config import *
 from .models import ItemList
 import requests
-import uuid
-
 
 
 def index(request):
@@ -38,8 +36,6 @@ class LoginView(APIView):
         return Response({"token":token.key,'csrf':csfr},status=200)
 
     
-
-
 '''
     Logout API which removes the
     sessionId from the cookies.
