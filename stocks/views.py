@@ -34,7 +34,6 @@ class LoginView(APIView):
         django_login(request,user)
         token, created = Token.objects.get_or_create(user=user)
         csfr = request.META['CSRF_COOKIE']
-        print(csfr)
         return Response({"token":token.key,'csrf':csfr},status=200)
 
     
