@@ -92,7 +92,8 @@
 
         <script>
             const BASE_URL = "https://stocksmonitor.herokuapp.com/"
-			// const BASE_URL = "http://localhost:8000/"
+            // const BASE_URL = "http://localhost:8000/"
+            
             var csrfToken;
             //get watchlist for a user
             function getWatchListForUser() {
@@ -142,6 +143,8 @@
 
             function addItemAction() {
 
+                let localToken = sessionStorage.getItem('token');
+
                 $('.loader-overlaycont').html(loaderdiv)
                 $.ajax(`${proxyurl}http://stocksmonitor.herokuapp.com/api/v1/watch_list`, {
                     type: "POST",
@@ -177,6 +180,7 @@
             }
 
             function deleteItemAction() {
+                let localToken = sessionStorage.getItem('token');
                 swal("Are you sure to delete stock", {
                     buttons: {
                         no: {
@@ -207,6 +211,7 @@
                     });
 
                 function deleteAction() {
+                    let localToken = sessionStorage.getItem('token');
                     $('.loader-overlaycont').html(loaderdiv)
 
                     $.ajax(`${proxyurl}https://stocksmonitor.herokuapp.com/api/v1/watch_list/3`, {
@@ -243,6 +248,7 @@
 
 
             function searchItemAction() {
+                let localToken = sessionStorage.getItem('token');
 
                 $('.loader-overlaycont').html(loaderdiv)
 
