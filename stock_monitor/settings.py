@@ -122,7 +122,6 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
             os.path.join(BASE_DIR, 'stock_monitor/static'),
-            os.path.join(BASE_DIR, 'stock_monitor/templates'),
         ]
 
 
