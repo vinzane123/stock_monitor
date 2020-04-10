@@ -50,6 +50,8 @@ MIDDLEWARE = [
 
 CORS_ORIGIN_ALLOW_ALL = True
 
+SESSION_COOKIE_SAMESITE = 'None'
+
 ROOT_URLCONF = 'stock_monitor.urls'
 
 
