@@ -18,10 +18,6 @@ import requests
 
 def index(request):
     return HttpResponse('Hella, Welcome Investors!')
-    # return render(request,'home.html')
-
-# def loginpage(request):
-#     return render(request,'login.html')
 
 '''
     Login API which returns token 
@@ -36,7 +32,7 @@ class LoginView(APIView):
         user = serializer.validated_data["user"]
         django_login(request,user)
         token, created = Token.objects.get_or_create(user=user)
-        return Response({"token":token.key},status=200)
+        return Response({"token":token.key,'user':self.request._user.id},status=200)
 
     
 '''
@@ -181,6 +177,7 @@ class PostValues:
     An API to return the WatchList of a user.
 '''
 
+
 class WatchListbyUser(generics.ListAPIView):
     serializer_class = ItemSerializer
     authentication_classes = (SessionAuthentication,TokenAuthentication)
@@ -189,7 +186,7 @@ class WatchListbyUser(generics.ListAPIView):
     def get_queryset(self):
         user = self.request._user.id
         if user:
-            return ItemList.objects.filter(user=user)   
+            return ItemList.objects.filter(user=user)
         else:
             return self.list(request,status=204)
 

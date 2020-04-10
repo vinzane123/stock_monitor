@@ -57,7 +57,7 @@
             <div>
                 <!-- Search form -->
                 <div class="form-inline d-flex justify-content-center md-form form-sm active-purple-2 mt-2">
-                    <input class="form-control form-control-sm mr-3 w-75" type="text" placeholder="Search"
+                    <input id="searchItems" class="form-control form-control-sm mr-3 w-75" type="text" placeholder="Search"
                         aria-label="Search">
                     <button class='btn btn-primary' style="height:25px;padding:0px 5px 5px 5px;"
                         onClick="searchItemAction()">search</button>
@@ -92,9 +92,15 @@
 
         <script>
             const BASE_URL = "https://stocksmonitor.herokuapp.com/"
-            // const BASE_URL = "http://localhost:8000/"
-            
+            // const BASE_URL = "http://localhost:8000/";
+            var userId = sessionStorage.getItem('userid') || '1';
+
             var csrfToken;
+            function getCookie(name) {
+                var value = "; " + document.cookie;
+                var parts = value.split("; " + name + "=");
+                if (parts.length == 2) return parts.pop().split(";").shift();
+            }
             //get watchlist for a user
             function getWatchListForUser() {
 
@@ -110,7 +116,7 @@
                 }
                 else {
                     $('.loader-overlaycont').html(loaderdiv)
-                    $.ajax(BASE_URL+`api/v1/watch_list_user`, {
+                    $.ajax(BASE_URL + `api/v1/watch_list_user`, {
                         type: "GET",
                         headers: {
                             // "Accept": "/",
@@ -122,7 +128,17 @@
                         statusCode: {
                             200: (response) => {
                                 console.log(response)
+                                $('#watchListTable').html('');
+
+                                let watchListHtml = `<tr><th>S.No</th><th>Name</th><th>Value</th><th></th></tr>`;
+                                response.map((stock, index) => {
+                                    watchListHtml += ` <tr><td>${index + 1}</td><td>${stock.item_name}</td><td>${stock.value}</td><td><img style="padding:5px" src='icons/delete.png' widht=30 height=30 onClick='deleteItemAction(${stock.id})'/></td></tr>`
+                                }
+                                );
+
+                                $('#watchListTable').html(watchListHtml);
                                 $('.loader-overlaycont').html('')
+
                             },
                             403: (response) => {
                                 $('.loader-overlaycont').html('')
@@ -140,13 +156,12 @@
             }
 
 
-
-            function addItemAction() {
+            function addItemAction(symbol="") {
 
                 let localToken = sessionStorage.getItem('token');
 
                 $('.loader-overlaycont').html(loaderdiv)
-                $.ajax(`${proxyurl}http://stocksmonitor.herokuapp.com/api/v1/watch_list`, {
+                $.ajax(BASE_URL+`api/v1/watch_list`, {
                     type: "POST",
                     async: true,
                     xhrFields: { withCredentials: true },
@@ -154,11 +169,12 @@
                         // "Accept": "/",
                         // "Cache-Control": "no-cache",
                         // "Cookie": `csrftoken=${csrfToken}`,
+                        "X-CSRFToken":getCookie('csrftoken'),
                         "Authorization": `Bearer ${localToken}`
                     },
                     data: {
-                        'item_name': '',
-                        'user': '1'
+                        'item_name': symbol || '',
+                        'user': userId
                     },
                     statusCode: {
                         200: (response) => {
@@ -179,7 +195,7 @@
 
             }
 
-            function deleteItemAction() {
+            function deleteItemAction(id="0") {
                 let localToken = sessionStorage.getItem('token');
                 swal("Are you sure to delete stock", {
                     buttons: {
@@ -198,7 +214,7 @@
                         switch (value) {
 
                             case "yes":
-                                deleteAction()
+                                deleteAction(id)
                                 break;
 
                             case "no":
@@ -210,11 +226,11 @@
                         }
                     });
 
-                function deleteAction() {
+                function deleteAction(id) {
                     let localToken = sessionStorage.getItem('token');
                     $('.loader-overlaycont').html(loaderdiv)
 
-                    $.ajax(`${proxyurl}https://stocksmonitor.herokuapp.com/api/v1/watch_list/3`, {
+                    $.ajax(BASE_URL+`api/v1/watch_list/`+id, {
                         type: "DELETE",
                         "async": true,
                         "crossDomain": true,
@@ -223,6 +239,7 @@
                             // "Accept": "/",
                             // "Cache-Control": "no-cache",
                             // "Cookie": `csrftoken=${csrfToken}`,
+                            "X-CSRFToken":getCookie('csrftoken'),
                             "Authorization": `Bearer ${localToken}`
                         },
                         statusCode: {
@@ -234,6 +251,12 @@
                             403: (response) => {
                                 $('.loader-overlaycont').html('')
                                 swal('Something went wrong. Please try again');
+                            },
+
+                            204:(response)=>{
+                                console.log(response)
+                                getWatchListForUser()
+                                $('.loader-overlaycont').html('')
                             }
                         },
                         error: () => {
@@ -248,11 +271,12 @@
 
 
             function searchItemAction() {
+                let searchString = document.getElementById('searchItems').value || '';
                 let localToken = sessionStorage.getItem('token');
 
                 $('.loader-overlaycont').html(loaderdiv)
 
-                $.ajax(BASE_URL+`api/v1/stock_search?keywords=goog`, {
+                $.ajax(BASE_URL + `api/v1/stock_search?keywords=`+searchString, {
                     type: "GET",
                     "async": true,
                     "crossDomain": true,
@@ -266,7 +290,18 @@
                     statusCode: {
                         200: (response) => {
                             console.log(response)
-                            $('.loader-overlaycont').html('')
+                            $('.loader-overlaycont').html('');
+
+                            $('#searchResultsTable').html('');
+                            if(response.bestMatches){
+                                let watchListHtml = `<tr><th>S.No</th><th>Symbol</th><th>Name</th><th></th></tr>`;
+                                response.bestMatches.map((stock, index) => {
+                                    watchListHtml += ` <tr><td>${index + 1}</td><td>${stock['1. symbol']}</td><td>${stock['2. name']}</td><td><img style="padding:5px" src='icons/add.png' widht=30 height=30 onClick='addItemAction("${stock['1. symbol']}")'/></td></tr>`
+                                }
+                                );
+                                $('#searchResultsTable').html(watchListHtml);
+                              
+                            }
                         },
                         403: (response) => {
                             $('.loader-overlaycont').html('')
@@ -300,55 +335,8 @@
                 $('.close').click(function () {
                     $('#overlay').hide()
                 })
-                var list = [
-                    // {
-                    //     'a': '1',
-                    //     'b': 'itc',
-                    //     'c': '200'
-                    // },
-                    // {
-                    //     'a': '2',
-                    //     'b': 'tcs',
-                    //     'c': '3434'
-                    // },
-                    // {
-                    //     'a': '3',
-                    //     'b': 'wipo',
-                    //     'c': '4564'
-                    // },
-                    // {
-                    //     'a': '4',
-                    //     'b': 'sdf',
-                    //     'c': '34'
-                    // },
-                    // {
-                    //     'a': '5',
-                    //     'b': 'hjg',
-                    //     'c': '400'
-                    // },
-                ]
+              
 
-                var watchListHtml = `<tr>
-        <th>S.No</th>
-        <th>Name</th>
-        <th>Value</th>
-        <th></th>
-    </tr>`;
-                list.map((stock, index) => {
-
-                    watchListHtml += ` <tr>
-        <td>${index + 1}</td>
-        <td>${stock.b}</td>
-        <td>${stock.c}</td>
-        <td><img style="padding:5px" src='icons/delete.png' widht=30 height=30 onClick='deleteItemAction()'/></td>
-    </tr>`
-                }
-
-
-                );
-
-                $('#watchListTable').html(watchListHtml);
-                $('#searchResultsTable').html(watchListHtml);
 
             });
 
@@ -356,7 +344,7 @@
             // user logout action
             function logOutAction() {
                 $('.loader-overlaycont').html(loaderdiv)
-                $.ajax(BASE_URL+`api/v1/auth/logout`, {
+                $.ajax(BASE_URL + `api/v1/auth/logout`, {
                     type: "POST",
                     xhrFields: { withCredentials: true },
                     statusCode: {

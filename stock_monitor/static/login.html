@@ -115,6 +115,7 @@
 								}
 								sessionStorage.setItem("token", response.token);
 								sessionStorage.setItem("csrftoken", response.csrf);
+								sessionStorage.setItem('userid',response.user);
 							
 								console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', response);
 								document.location.href = 'home.html'
