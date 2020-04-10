@@ -13,13 +13,18 @@ from rest_framework import filters
 from stock_monitor.config import *
 from .models import ItemList
 import requests
+
+
+
+def index(request):
+    return HttpResponse('Hella, Investors!')
+
+
 '''
     Login API which returns token 
     validating username and pass-
     -word of the user.
 '''
-def index(request):
-    return HttpResponse('Hella, Investors!')
 
 class LoginView(APIView):
     def post(self,request):
@@ -28,7 +33,9 @@ class LoginView(APIView):
         user = serializer.validated_data["user"]
         django_login(request,user)
         token, created = Token.objects.get_or_create(user=user)
-        return Response({"token":token.key},status=200)
+        csfr = request.META['CSRF_COOKIE']
+        print(csfr)
+        return Response({"token":token.key,'csrf':csfr},status=200)
 
     
 
