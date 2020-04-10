@@ -1,7 +1,6 @@
 import os
 import django_heroku
 from stock_monitor import config 
-from stocks.middleware import SameSiteMiddleware
 
 
 
@@ -40,7 +39,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'stocks.middleware.SameSiteMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
