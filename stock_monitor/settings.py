@@ -3,7 +3,6 @@ import django_heroku
 from stock_monitor import config 
 
 
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = config.SECRET_KEY
 DEBUG = True
@@ -51,15 +50,21 @@ MIDDLEWARE = [
 
 CORS_ORIGIN_ALLOW_ALL = True
 
+CORS_ORIGIN_WHITELIST = [
+    "https://stocksmonitor.heroku.com",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000"
+]
+
 ROOT_URLCONF = 'stock_monitor.urls'
 
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            os.path.join(BASE_DIR, 'stock_monitor/templates'),
-        ],
+        # 'DIRS': [
+        #     os.path.join(BASE_DIR, 'stock_monitor/templates'),
+        # ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -111,7 +116,15 @@ USE_L10N = True
 USE_TZ = True
 
 
+
 STATIC_URL = '/static/'
+
+
+STATICFILES_DIRS = [
+            os.path.join(BASE_DIR, 'stock_monitor/static'),
+            os.path.join(BASE_DIR, 'stock_monitor/templates'),
+        ]
+
 
 
 django_heroku.settings(locals())

@@ -91,6 +91,8 @@
         <script src="js/loader.js"></script>
 
         <script>
+            const BASE_URL = "https://stocksmonitor.herokuapp.com/"
+			// const BASE_URL = "http://localhost:8000/"
             var csrfToken;
             //get watchlist for a user
             function getWatchListForUser() {
@@ -107,7 +109,7 @@
                 }
                 else {
                     $('.loader-overlaycont').html(loaderdiv)
-                    $.ajax(`https://stocksmonitor.herokuapp.com/api/v1/watch_list_user`, {
+                    $.ajax(BASE_URL+`api/v1/watch_list_user`, {
                         type: "GET",
                         headers: {
                             // "Accept": "/",
@@ -244,7 +246,7 @@
 
                 $('.loader-overlaycont').html(loaderdiv)
 
-                $.ajax(`https://stocksmonitor.herokuapp.com/api/v1/stock_search?keywords=goog`, {
+                $.ajax(BASE_URL+`api/v1/stock_search?keywords=goog`, {
                     type: "GET",
                     "async": true,
                     "crossDomain": true,
@@ -348,7 +350,7 @@
             // user logout action
             function logOutAction() {
                 $('.loader-overlaycont').html(loaderdiv)
-                $.ajax(`https://stocksmonitor.herokuapp.com/api/v1/auth/logout`, {
+                $.ajax(BASE_URL+`api/v1/auth/logout`, {
                     type: "POST",
                     xhrFields: { withCredentials: true },
                     statusCode: {

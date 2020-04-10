@@ -17,11 +17,11 @@ import requests
 
 
 def index(request):
-    return render(request,'home.html')
-    # return HttpResponse('Hella, Investors!')
+    return HttpResponse('Hella, Welcome Investors!')
+    # return render(request,'home.html')
 
-def loginpage(request):
-    return render(request,'login.html')
+# def loginpage(request):
+#     return render(request,'login.html')
 
 '''
     Login API which returns token 

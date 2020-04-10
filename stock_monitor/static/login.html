@@ -56,7 +56,8 @@
 			}
 
 			$(document).ready(function () {
-
+				const BASE_URL = "https://stocksmonitor.herokuapp.com/"
+				// const BASE_URL = "http://localhost:8000/"
 				// function that checks if the browser supports HTML5
 				// local storage
 				// @returns {boolean}
@@ -96,7 +97,7 @@
 					// console.log(userName, password);
 
 					$('.loader-overlaycont').html(loaderdiv)
-					$.ajax(`https://stocksmonitor.herokuapp.com/api/v1/auth/login`, {
+					$.ajax(BASE_URL+`api/v1/auth/login`, {
 						type: "POST",
 						data: { "username": userName, "password": password },
 						"headers": {
@@ -116,7 +117,7 @@
 								sessionStorage.setItem("csrftoken", response.csrf);
 							
 								console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', response);
-								// document.location.href = 'home.html'
+								document.location.href = 'home.html'
 								$('.loader-overlaycont').html('')
 
 							},
