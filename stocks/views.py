@@ -13,9 +13,6 @@ from rest_framework import filters
 from stock_monitor.config import *
 from .models import ItemList
 import requests
-# Create your views here.
-
-
 '''
     Login API which returns token 
     validating username and pass-
@@ -31,7 +28,7 @@ class LoginView(APIView):
         user = serializer.validated_data["user"]
         django_login(request,user)
         token, created = Token.objects.get_or_create(user=user)
-        return Response({"token":token.key,"cookie":request.META['HTTP_COOKIE']},status=200)
+        return Response({"token":token.key,"cookie":request.META},status=200)
 
     
 
@@ -63,7 +60,6 @@ class StockSearch(APIView):
 
     def get(self,request):
         re = request.query_params
-        print(request.META['HTTP_COOKIE'])
         if re:
             keywords = re['keywords']
             payload = {'function':self.function,'keywords':keywords,'apikey':api_key}
@@ -105,11 +101,8 @@ class WatchList(mixins.ListModelMixin,
 
     def delete(self,request,id=None):
         try:
-            print(dir(request))
-            print(request.data)
             obj = ItemList.objects.get(id=id)
             if obj.user == request.user:
-                print(Response)
                 return self.destroy(request,id)
             else:
                 msg = "Not enough Credentials"
