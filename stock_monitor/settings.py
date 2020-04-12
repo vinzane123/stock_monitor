@@ -1,11 +1,10 @@
 import os
-# import django_heroku
 from stock_monitor import config 
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = config.SECRET_KEY
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 
@@ -63,9 +62,6 @@ ROOT_URLCONF = 'stock_monitor.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # 'DIRS': [
-        #     os.path.join(BASE_DIR, 'stock_monitor/static'),
-        # ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -118,7 +114,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -135,12 +130,6 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
             os.path.join(BASE_DIR, 'stock_monitor/static'),
-            '/var/www/static/', 
         ]
 
-STATIC_ROOT = "/var/www/stocksmonitor.azurewebsites.net/static/"
-
-    #     os.path.join(BASE_DIR, "static"),
-    # '/var/www/static/', 
-
-# django_heroku.settings(locals())
+STATIC_ROOT =  os.path.join(BASE_DIR, "stock_monitor/static")

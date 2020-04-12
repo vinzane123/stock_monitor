@@ -7,7 +7,6 @@ from stocks.views import LoginView,LogoutView,StockSearch,WatchList,WatchListbyU
 
 urlpatterns = [
     path('', include('stocks.urls')),
-    # path('login/',loginpage,name='page_login'),
     path('',index,name='index'),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
