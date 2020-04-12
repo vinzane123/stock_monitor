@@ -18,10 +18,10 @@ import requests
 
 
 def index(request):
-    try:
-        return HttpResponseRedirect( "https://stocksmonitor.azurewebsites.net/static/home.html")
-    except:
-        return HttpResponse('Hella, Welcome Investors!')
+    # try:
+    #     return HttpResponseRedirect( "https://stocksmonitor.azurewebsites.net/static/home.html")
+    # except:
+    return HttpResponse('Hella, Welcome Investors!')
 
 '''
     Login API which returns token 
