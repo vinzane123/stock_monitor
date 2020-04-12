@@ -19,7 +19,7 @@ import requests
 
 def index(request):
     try:
-        return HttpResponseRedirect( "https://stocks-app.azurewebsites.net/static/home.html")
+        return HttpResponseRedirect( "https://stocksmonitor.azurewebsites.net/static/home.html")
     except:
         return HttpResponse('Hella, Welcome Investors!')
 
