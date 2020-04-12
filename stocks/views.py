@@ -24,7 +24,7 @@ def index(request):
     try:
         return HttpResponseRedirect( "https://stocksmonitor.azurewebsites.net/static/home.html")
     except:
-        return HttpResponse('Hella, Welcome Investors!')
+        return HttpResponse('Hella, Welcome Investor!')
 
 '''
     Login API which returns token 
