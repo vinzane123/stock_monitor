@@ -5,7 +5,7 @@ from stock_monitor import config
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = config.SECRET_KEY
-DEBUG = True
+DEBUG = False
 ALLOWED_HOSTS = ['*']
 
 
@@ -81,24 +81,26 @@ TEMPLATES = [
 WSGI_APPLICATION = 'stock_monitor.wsgi.application'
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'stocks',
-        'USER': 'root',
-        'PASSWORD': 'root',
-        'HOST': 'localhost',
-        'PORT': '5432',
+
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'stocks',
+            'USER': 'root',
+            'PASSWORD': 'root',
+            'HOST': 'localhost',
+            'PORT': '5432',
+        }
+    }
 
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -133,6 +135,12 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
             os.path.join(BASE_DIR, 'stock_monitor/static'),
+            '/var/www/static/', 
         ]
+
+STATIC_ROOT = "/var/www/stocksmonitor.azurewebsites.net/static/"
+
+    #     os.path.join(BASE_DIR, "static"),
+    # '/var/www/static/', 
 
 # django_heroku.settings(locals())
