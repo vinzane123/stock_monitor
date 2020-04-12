@@ -1,5 +1,5 @@
 import os
-import django_heroku
+# import django_heroku
 from stock_monitor import config 
 
 
@@ -63,7 +63,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         # 'DIRS': [
-        #     os.path.join(BASE_DIR, 'stock_monitor/templates'),
+        #     os.path.join(BASE_DIR, 'stock_monitor/static'),
         # ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -80,13 +80,24 @@ TEMPLATES = [
 WSGI_APPLICATION = 'stock_monitor.wsgi.application'
 
 
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'stocks',
+        'USER': 'root',
+        'PASSWORD': 'root',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -126,4 +137,4 @@ STATICFILES_DIRS = [
 
 
 
-django_heroku.settings(locals())
+# django_heroku.settings(locals())

@@ -1,4 +1,5 @@
 from django.shortcuts import render,HttpResponse
+from django.http import HttpResponseRedirect
 from rest_framework.views import APIView
 from .serializers import LoginSerializer,ItemSerializer
 from django.contrib.auth import login as django_login, logout as django_logout
@@ -17,7 +18,10 @@ import requests
 
 
 def index(request):
-    return HttpResponse('Hella, Welcome Investors!')
+    try:
+        return HttpResponseRedirect( "https://stocks-app.azurewebsites.net/static/home.html")
+    except:
+        return HttpResponse('Hella, Welcome Investors!')
 
 '''
     Login API which returns token 
