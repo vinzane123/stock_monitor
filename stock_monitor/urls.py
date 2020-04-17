@@ -7,6 +7,8 @@ urlpatterns = [
     path('', include('stocks.urls')),
     # path('login/',loginpage,name='page_login'),
     path('',index,name='index'),
+    # path('microsoft/auth-callback/',index,name='index'),
+    path('microsoft/', include('microsoft_auth.urls', namespace='microsoft')),
 ]
 
 
