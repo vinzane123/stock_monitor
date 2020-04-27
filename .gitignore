@@ -1,10 +1,8 @@
+.elasticbeanstalk/**
+.vscode
+/stock_monitor/__pycache__
+/stock_monitor/config.py 
 **/__pycache__
-/stocks/migrations/**
-/config.py 
-**/db.sqlite3
-/.vscode
-/.elasticbeanstalk/**
-# Elastic Beanstalk Files
-# .elasticbeanstalk/*
-# !.elasticbeanstalk/*.cfg.yml
-# !.elasticbeanstalk/*.global.yml
+.manage.py
+
+!.gitignore
